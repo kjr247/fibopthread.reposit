@@ -1,0 +1,77 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <iostream>
+ 
+ 
+using namespace std;
+ 
+int i, var1, var2;
+int inputsize=0;
+int fibarray[100];
+ 
+ 
+void *runner (void *param);
+int fibfunction(int start, int end);
+ 
+ 
+ 
+int main ()
+{
+    fibarray[0] = 0;
+    fibarray[1] = 1;
+  
+	
+    pthread_t tid;
+    pthread_attr_t attr;
+    int inputsize;
+    cout << "Enter number to calculate a Fibonacci sequence" << endl;
+    cin >> inputsize;
+ 
+    pthread_attr_init(&attr);
+    int size = inputsize/2;
+    pthread_create (&tid, &attr, runner, (void*)&size);
+    pthread_join (tid, NULL);
+    fibfunction(inputsize/2,inputsize);
+ 
+ 
+ 
+    for(i=0; i<inputsize; i++)
+    {
+        cout << fibarray[i] << endl;
+    }
+ 
+    return 0;
+}
+ 
+void *runner (void *param)
+{ 
+    int s = *((int*)param);
+    fibfunction(2,s);
+    pthread_exit(0);
+}
+ 
+int fibfunction(int start, int end)
+{
+    if(end<=2)
+    {
+	fibarray[0] = 0;
+	fibarray[1] = 1;
+    }
+    else if(end<=3)
+    {
+	fibarray[0] = 0;
+	fibarray[1] = 1;
+	fibarray[2] = 1;
+    }
+    else{
+    var1 = fibarray[start-2];
+    var2 = fibarray[start-1];
+    for ( i = start; i < end; i++)
+    {
+        fibarray[i] = var1 + var2;
+        var1 = var2;
+        var2 = fibarray[i];
+    }
+    }
+    return 0;
+}
